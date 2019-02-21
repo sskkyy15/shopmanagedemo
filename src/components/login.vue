@@ -24,22 +24,19 @@ export default {
     };
   },
   methods: {
-    handlelogin() {
-      this.$http
-        .post(`/login`, this.formdata)
-        .then(res => {
-          console.log(res);
-          const { data: { data, meta: { msg, status } } } = res;
-          if (status === 200) {
-            this.$message.success(msg);
-            this.$router.push({ name: "home" });
-          } else {
-            this.$message.error(msg);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    //同步执行，异步操作
+    async handlelogin() {
+      const res = await this.$http.post(`/login`, this.formdata);
+      console.log(res);
+      const { data: { data, meta: { msg, status } } } = res;
+      if (status === 200) {
+        //   localStorage  H5新特性
+        localStorage.setItem("token", data.token);
+        this.$message.success(msg);
+        this.$router.push({ name: "home" });
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };
